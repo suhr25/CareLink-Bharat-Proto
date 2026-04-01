@@ -1,24 +1,11 @@
-// ═══════════════════════════════════════════════════════════════════════════
-//  CareLink Bharat — Unified Script
-//  Sections:
-//    1. User Auth Store
-//    2. Three.js Login Scene
-//    3. Login / Signup Logic
-//    4. App Init (boot decides login or main)
-//    5. Three.js Main Scene (scroll-reactive waves, rings, etc.)
-//    6. Main App Logic (voice, steps, history, etc.)
-// ═══════════════════════════════════════════════════════════════════════════
-
 'use strict';
 
-// ── 1. USER AUTH STORE ──────────────────────────────────────────────────────
 function getUsers() {
     try { return JSON.parse(localStorage.getItem('cl_users') || '[]'); }
     catch { return []; }
 }
 function saveUsers(users) { localStorage.setItem('cl_users', JSON.stringify(users)); }
 
-// Seed built-in accounts on first ever load
 (function seedDefaults() {
     if (!getUsers().length) {
         saveUsers([
@@ -29,7 +16,6 @@ function saveUsers(users) { localStorage.setItem('cl_users', JSON.stringify(user
     }
 })();
 
-// ── 2. THREE.JS LOGIN SCENE ─────────────────────────────────────────────────
 let loginRenderer = null;
 
 function startLoginScene() {
@@ -50,7 +36,6 @@ function startLoginScene() {
         mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
     });
 
-    // ── Grid ──
     const gridGeo = new THREE.PlaneGeometry(1400, 900, 60, 40);
     gridGeo.rotateX(-Math.PI * 0.3);
     const grid = new THREE.Mesh(gridGeo, new THREE.MeshBasicMaterial({
@@ -67,7 +52,6 @@ function startLoginScene() {
     grid2.position.set(0, -100, -150);
     scene.add(grid2);
 
-    // ── Rings ──
     function makeRing(r, tube, color, x, y, z) {
         const mat = new THREE.MeshBasicMaterial({ color, wireframe: false, transparent: true, opacity: 0 });
         const m = new THREE.Mesh(new THREE.TorusGeometry(r, tube, 16, 120), mat);
@@ -94,13 +78,11 @@ function startLoginScene() {
     }
     rings.forEach(({ mat }, i) => fadeIn(mat, ringTargets[i], 1200, 300 + i * 200));
 
-    // ── Central icosahedron ──
     const icoMat = new THREE.MeshBasicMaterial({ color: 0x56C8D8, wireframe: true, transparent: true, opacity: 0 });
     const ico = new THREE.Mesh(new THREE.IcosahedronGeometry(28, 1), icoMat);
     scene.add(ico);
     fadeIn(icoMat, 0.14, 1400, 200);
 
-    // ── Satellite octahedra ──
     function makeOcta(size, color, x, y, z) {
         const mat = new THREE.MeshBasicMaterial({ color, wireframe: true, transparent: true, opacity: 0 });
         const m = new THREE.Mesh(new THREE.OctahedronGeometry(size, 0), mat);
@@ -115,7 +97,6 @@ function startLoginScene() {
     fadeIn(octa2.mat, 0.15, 1200, 800);
     fadeIn(octa3.mat, 0.12, 1000, 500);
 
-    // ── Stars ──
     const N = 120, sPos = new Float32Array(N * 3), sCol = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) {
         sPos[i * 3] = (Math.random() - 0.5) * 800;
@@ -133,7 +114,6 @@ function startLoginScene() {
     const stars = new THREE.Points(starGeo, starMat);
     scene.add(stars);
 
-    // ── Connection lines ──
     function makeLine(a, b, c) {
         const mat = new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0.07 });
         scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a), new THREE.Vector3(...b)]), mat));
@@ -204,12 +184,10 @@ function startLoginScene() {
     return () => { loginAnimating = false; };
 }
 
-// ── 3. LOGIN / SIGNUP LOGIC ─────────────────────────────────────────────────
 function initAuthUI(onSuccess) {
     const loginCardEl = document.getElementById('loginCard');
     const signupCardEl = document.getElementById('signupCard');
 
-    // Panel toggle
     document.getElementById('showSignup').addEventListener('click', (e) => {
         e.preventDefault();
         loginCardEl.classList.add('slide-out-left');
@@ -233,7 +211,6 @@ function initAuthUI(onSuccess) {
         }, 260);
     });
 
-    // Eye toggle for login password
     const togglePwd = document.getElementById('togglePwd');
     const pwdInput = document.getElementById('password');
     togglePwd.addEventListener('click', () => {
@@ -241,7 +218,6 @@ function initAuthUI(onSuccess) {
         togglePwd.textContent = pwdInput.type === 'password' ? '👁' : '🙈';
     });
 
-    // Eye toggle for signup password
     const toggleSuPwd = document.getElementById('toggleSuPwd');
     const suPwdInput = document.getElementById('su_password');
     toggleSuPwd.addEventListener('click', () => {
@@ -249,11 +225,9 @@ function initAuthUI(onSuccess) {
         toggleSuPwd.textContent = suPwdInput.type === 'password' ? '👁' : '🙈';
     });
 
-    // Auto-fill remembered user
     const saved = localStorage.getItem('cl_user');
     if (saved) document.getElementById('username').value = saved;
 
-    // Login form
     const loginForm = document.getElementById('loginForm');
     const loginError = document.getElementById('loginError');
     const loginSpinner = document.getElementById('loginSpinner');
@@ -282,7 +256,6 @@ function initAuthUI(onSuccess) {
         }
     });
 
-    // Signup form
     const signupForm = document.getElementById('signupForm');
     const signupError = document.getElementById('signupError');
     const signupSuccess = document.getElementById('signupSuccess');
@@ -338,18 +311,15 @@ function triggerLoginTransition(onSuccess) {
     }, 900);
 }
 
-// ── SHARED UTILS ────────────────────────────────────────────────────────────
 function showErrMsg(el, msg) { el.textContent = msg; el.classList.add('visible'); }
 function clearMsg(el) { el.textContent = ''; el.classList.remove('visible'); el.style.opacity = ''; el.style.transform = ''; }
 function setLoading(txt, sp, on) { txt.style.display = on ? 'none' : 'inline'; sp.style.display = on ? 'inline' : 'none'; }
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ── 4. BOOT ─────────────────────────────────────────────────────────────────
 (function boot() {
     const loggedIn = !!localStorage.getItem('cl_name');
 
     if (!loggedIn) {
-        // Show login screen, hide main app
         document.getElementById('loginScreen').style.display = 'block';
         document.getElementById('mainApp').style.display = 'none';
         const stopLogin = startLoginScene();
@@ -358,14 +328,12 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
             launchMainApp();
         });
     } else {
-        // Already authenticated — skip login
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
         launchMainApp();
     }
 })();
 
-// ── 5. THREE.JS MAIN SCENE ──────────────────────────────────────────────────
 function startMainScene() {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 2000);
@@ -377,7 +345,6 @@ function startMainScene() {
     renderer.domElement.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
     document.getElementById('mainApp').prepend(renderer.domElement);
 
-    // Wave mesh helper
     function makeWave(segsX, segsZ, color, opacity) {
         const geo = new THREE.PlaneGeometry(600, 600, segsX, segsZ);
         geo.rotateX(-Math.PI / 2);
@@ -391,7 +358,6 @@ function startMainScene() {
     const wave2 = makeWave(30, 30, 0x7B68EE, 0.07);
     const wave3 = makeWave(20, 20, 0xF0A050, 0.00);
 
-    // Ring helper
     function makeMainRing(r, tube, color, opacity) {
         const mat = new THREE.MeshBasicMaterial({ color, wireframe: false, transparent: true, opacity });
         const m = new THREE.Mesh(new THREE.TorusGeometry(r, tube, 16, 120), mat);
@@ -401,13 +367,11 @@ function startMainScene() {
     const ring1 = makeMainRing(90, 1.2, 0x56C8D8, 0.08);
     const ring2 = makeMainRing(60, 0.8, 0xF0A050, 0.00);
 
-    // Dodecahedron
     const dMat = new THREE.MeshBasicMaterial({ color: 0xF0A050, wireframe: true, transparent: true, opacity: 0.00 });
     const dMesh = new THREE.Mesh(new THREE.DodecahedronGeometry(22, 0), dMat);
     dMesh.position.set(120, 20, -40);
     scene.add(dMesh);
 
-    // Particles
     const PC = 70, pPos = new Float32Array(PC * 3), pCol = new Float32Array(PC * 3);
     for (let i = 0; i < PC; i++) {
         const a = Math.random() * Math.PI * 2, r = 80 + Math.random() * 260;
@@ -424,7 +388,6 @@ function startMainScene() {
     const particles = new THREE.Points(pGeo, pMat);
     scene.add(particles);
 
-    // Scroll state
     let scrollY = 0, scrollTarget = 0;
     const maxScroll = () => (document.getElementById('mainApp').scrollHeight || document.body.scrollHeight) - window.innerHeight;
     document.getElementById('mainApp').addEventListener('scroll', (e) => { scrollTarget = e.target.scrollTop; });
@@ -436,7 +399,6 @@ function startMainScene() {
         mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
     });
 
-    // Scroll-reveal for sections
     const revealTargets = document.querySelectorAll('.hero, .query-section, .steps-section, .empty-state, .celebration, .footer');
     const revealObs = new IntersectionObserver((entries) => {
         entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('scroll-visible'); });
@@ -453,7 +415,6 @@ function startMainScene() {
         mouseSmooth.x += (mouse.x - mouseSmooth.x) * 0.04;
         mouseSmooth.y += (mouse.y - mouseSmooth.y) * 0.04;
 
-        // Animate wave 1
         const v1 = wave1.geo.attributes.position.array;
         for (let i = 0; i < v1.length; i += 3) {
             v1[i + 1] = Math.sin(v1[i] * 0.012 + t * 0.6) * (12 + sf * 20) +
@@ -462,7 +423,6 @@ function startMainScene() {
         wave1.geo.attributes.position.needsUpdate = true;
         wave1.mat.opacity = 0.10 + sf * 0.06;
 
-        // Animate wave 2
         const v2 = wave2.geo.attributes.position.array;
         for (let i = 0; i < v2.length; i += 3) {
             v2[i + 1] = Math.sin(v2[i] * 0.009 + t * 0.4 + 1) * (10 + sf * 18) +
@@ -472,7 +432,6 @@ function startMainScene() {
         wave2.mat.opacity = 0.07 + sf * 0.05;
         wave2.m.position.y = -60 + sf * 20;
 
-        // Amber wave (fades in at 30% scroll)
         wave3.mat.opacity = Math.max(0, (sf - 0.3) / 0.3) * 0.05;
         const v3 = wave3.geo.attributes.position.array;
         for (let i = 0; i < v3.length; i += 3) {
@@ -481,31 +440,26 @@ function startMainScene() {
         wave3.geo.attributes.position.needsUpdate = true;
         wave3.m.position.y = -50 + sf * 30;
 
-        // Camera
         camera.position.y = 200 - sf * 180;
         camera.position.z = 420 - sf * 160;
         camera.rotation.x = -0.45 + sf * 0.25 + mouseSmooth.y * 0.03;
         camera.rotation.y = mouseSmooth.x * 0.05 + sf * 0.1;
 
-        // Ring 1 (always visible)
         ring1.m.rotation.x = t * 0.2 + sf * 0.4;
         ring1.m.rotation.y = t * 0.15 + mouseSmooth.x * 0.2;
         ring1.m.position.y = -20 + Math.sin(t * 0.4) * 15 + sf * 30;
 
-        // Ring 2 (appears at 40% scroll)
         const r2p = Math.max(0, (sf - 0.4) / 0.2);
         ring2.mat.opacity = r2p * 0.08;
         ring2.m.position.set(-80 + sf * 20, 10 + Math.cos(t * 0.5) * 10, -30);
         ring2.m.rotation.set(t * 0.3, t * 0.2, sf * 0.5);
 
-        // Dodecahedron (appears at 50% scroll)
         const dp = Math.max(0, (sf - 0.5) / 0.2);
         dMat.opacity = dp * 0.14;
         dMesh.rotation.x = t * 0.25;
         dMesh.rotation.y = t * 0.35 + sf * 0.6;
         dMesh.position.y = 20 + Math.sin(t * 0.6) * 10 + sf * 20;
 
-        // Particles
         particles.rotation.y = t * 0.015 + sf * 0.4;
         particles.rotation.x = t * 0.008 + sf * 0.1;
         pMat.opacity = 0.4 + sf * 0.15;
@@ -522,14 +476,11 @@ function startMainScene() {
     });
 }
 
-// ── 6. MAIN APP LOGIC ───────────────────────────────────────────────────────
 function launchMainApp() {
     document.getElementById('mainApp').style.display = 'block';
 
-    // Start Three.js main scene
     startMainScene();
 
-    // Welcome greeting
     const name = localStorage.getItem('cl_name');
     if (name) {
         const chip = document.getElementById('userChip');
@@ -559,7 +510,6 @@ function launchMainApp() {
         setTimeout(() => el.style.display = 'none', 400);
     }
 
-    // DOM refs
     const $ = id => document.getElementById(id);
     const queryInput = $('queryInput');
     const queryBox = $('queryBox');
@@ -583,9 +533,8 @@ function launchMainApp() {
     const historyClear = $('historyClear');
 
     let isListening = false, currentLanguage = 'en-IN', fontEnlarged = false;
-    const GROQ_API_KEY = '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';
+    const GROQ_API_KEY = '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';
 
-    // ── History ──
     function getHistory() { try { return JSON.parse(localStorage.getItem('cl_history') || '[]'); } catch { return []; } }
     function saveToHistory(q) {
         const h = getHistory(); h.unshift({ query: q, time: new Date().toLocaleString() });
@@ -608,7 +557,6 @@ function launchMainApp() {
     historyClose.addEventListener('click', () => historyPanel.classList.remove('open'));
     historyClear.addEventListener('click', () => { localStorage.removeItem('cl_history'); renderHistory(); });
 
-    // ── Speech Synthesis ──
     const synth = window.speechSynthesis;
     let currentUtterance = null, synthResumeInterval = null, availableVoices = [];
     function loadVoices() { availableVoices = synth.getVoices(); }
@@ -634,7 +582,6 @@ function launchMainApp() {
     $('resumeBtn').onclick = () => { synth.resume(); synthResumeInterval = setInterval(() => { if (!synth.speaking) clearInterval(synthResumeInterval); else synth.resume(); }, 5000); };
     $('stopBtn').onclick = () => { synth.cancel(); clearInterval(synthResumeInterval); };
 
-    // ── Speech Recognition ──
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition = null;
     if (SpeechRecognition) {
@@ -665,7 +612,6 @@ function launchMainApp() {
 
     queryInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submitBtn.click(); } });
 
-    // ── Fetch Steps from Groq ──
     async function fetchSteps(query) {
         const isHindi = currentLanguage === 'hi-IN';
         const systemPrompt = `You are CareLink Bharat. Return ONLY a JSON array of step strings. No markdown. 5-8 simple steps max. ${isHindi ? 'Language: Hindi' : 'Language: English'}. Example: ["Open WhatsApp.", "Tap Chat."]`;
