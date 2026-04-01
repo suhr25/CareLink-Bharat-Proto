@@ -60,7 +60,6 @@ body::before {
     pointer-events: none;
 }
 
-/* ── PAGE ENTRY OVERLAY ──────────────────────────── */
 .page-transition-in {
     position: fixed;
     inset: 0;
@@ -75,7 +74,6 @@ body::before {
     opacity: 0;
 }
 
-/* ── WELCOME BANNER ──────────────────────────────── */
 .welcome-banner {
     position: fixed;
     top: 0;
@@ -158,7 +156,6 @@ body::before {
     color: #E2E8F0;
 }
 
-/* ── USER CHIP (navbar) ──────────────────────────── */
 .user-chip {
     display: flex;
     align-items: center;
@@ -217,7 +214,6 @@ body::before {
     justify-content: space-between;
 }
 
-/* ── History Panel ───────────────────────────────── */
 .history-panel {
     position: fixed;
     top: 0;
@@ -424,6 +420,7 @@ body::before {
     margin-bottom: 16px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    border: 1px solid rgba(86, 200, 216, 0.15);
 }
 
 .hero h1 {
@@ -463,10 +460,6 @@ body::before {
     max-width: 520px;
     margin: 0 auto;
     line-height: 1.7;
-}
-
-.hero-badge {
-    border: 1px solid rgba(86, 200, 216, 0.15);
 }
 
 .query-section {
@@ -989,7 +982,6 @@ body::before {
     }
 }
 
-/* ── Scroll-Reveal Animations ────────────────────── */
 .scroll-reveal {
     opacity: 0;
     transform: translateY(40px);
@@ -1015,11 +1007,6 @@ body::before {
 }
 
 
-/* ════════════════════════════════════════════════════
-   LOGIN SCREEN STYLES
-   ════════════════════════════════════════════════════ */
-
-/* Full-screen login wrapper */
 #loginScreen {
     position: fixed;
     inset: 0;
@@ -1027,7 +1014,6 @@ body::before {
     overflow: hidden;
 }
 
-/* Three.js canvas inside login screen */
 #loginCanvas {
     position: fixed;
     inset: 0;
@@ -1035,7 +1021,6 @@ body::before {
     pointer-events: none;
 }
 
-/* ── OVERLAY LAYOUT ──────────────────────────────── */
 .login-overlay {
     position: relative;
     z-index: 1;
@@ -1048,7 +1033,6 @@ body::before {
     gap: 32px;
 }
 
-/* ── BRAND TOP ───────────────────────────────────── */
 .brand-top {
     text-align: center;
     animation: fadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -1075,7 +1059,6 @@ body::before {
     font-weight: 600;
 }
 
-/* ── LOGIN CARD ──────────────────────────────────── */
 .login-card {
     position: relative;
     width: 100%;
@@ -1117,7 +1100,6 @@ body::before {
     animation: pulse 4s ease-in-out infinite;
 }
 
-/* ── CARD HEADER ─────────────────────────────────── */
 .card-header {
     text-align: center;
     margin-bottom: 32px;
@@ -1154,7 +1136,6 @@ body::before {
     color: var(--text-muted);
 }
 
-/* ── FORM ────────────────────────────────────────── */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -1283,7 +1264,6 @@ body::before {
     transition: all 0.35s ease;
 }
 
-/* ── LOGIN BUTTON ────────────────────────────────── */
 .login-btn {
     width: 100%;
     padding: 14px;
@@ -1341,7 +1321,6 @@ body::before {
     box-shadow: 0 8px 24px rgba(123, 104, 238, 0.35);
 }
 
-/* ── CARD FOOTER ─────────────────────────────────── */
 .card-footer {
     text-align: center;
     margin-top: 24px;
@@ -1360,7 +1339,6 @@ body::before {
     color: var(--primary-glow);
 }
 
-/* ── CARD FLIP WRAP ──────────────────────────────── */
 .card-flip-wrap {
     width: 100%;
     max-width: 420px;
@@ -1377,7 +1355,6 @@ body::before {
     display: none;
 }
 
-/* ── SCROLL HINT ─────────────────────────────────── */
 .scroll-hint {
     display: flex;
     flex-direction: column;
@@ -1394,7 +1371,6 @@ body::before {
     animation: bounce 1.8s ease-in-out infinite;
 }
 
-/* ── PANEL SLIDE ANIMATIONS ──────────────────────── */
 .slide-in-right {
     animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -1411,7 +1387,6 @@ body::before {
     animation: slideOutRight 0.28s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
-/* ── PAGE-OUT TRANSITION OVERLAY ─────────────────── */
 .page-transition-out {
     position: fixed;
     inset: 0;
@@ -1457,7 +1432,6 @@ body::before {
     letter-spacing: 2px;
 }
 
-/* ── KEYFRAMES ───────────────────────────────────── */
 @keyframes pulse {
 
     0%,
@@ -1634,7 +1608,6 @@ body::before {
     }
 }
 
-/* ── RESPONSIVE ──────────────────────────────────── */
 @media (max-width: 480px) {
     .login-card {
         padding: 28px 20px;
