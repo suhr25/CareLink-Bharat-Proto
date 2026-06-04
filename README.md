@@ -35,7 +35,6 @@ It transforms traditional web interaction into a **hands-free, step-by-step guid
   - Minimal UI with clarity and accessibility in mind
 
 ---
-
 ##  System Architecture
 
 ```mermaid
